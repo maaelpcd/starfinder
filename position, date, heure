@@ -1,0 +1,27 @@
+import webbrowser
+import folium
+import requests, json
+import urllib.parse
+from datetime import date, datetime
+aujourdhui=date.today()
+heure=datetime.now().strftime("%H:%M:%S")
+print("Nous sommes actuellement le :",aujourdhui)
+print("Il est :",heure)
+
+def position():
+    api_url = "https://api-adresse.data.gouv.fr/search/?q="
+    adr = input("Veuillez entrer votre position")
+    r = requests.get(api_url + urllib.parse.quote(adr))
+
+    reponse_json_texte = r.text
+
+    data = json.loads(reponse_json_texte)
+    premier_resultat = data.get("features")[0]
+    geometry = premier_resultat.get("geometry")
+    coordinates_list = geometry.get("coordinates")
+    longitude = coordinates_list[0]
+    latitude = coordinates_list[1] 
+    print(f"Longitude : {longitude}")
+    print(f"Latitude : {latitude}")
+    lien="http://maps.google.com/?q="+str(latitude)+","+str(longitude)
+    webbrowser.open_new_tab(lien)
